@@ -1,0 +1,19 @@
+name: Daily Vietnam Bank Interest Rate Sync
+
+on:
+  schedule:
+    # 08:30 AM Vietnam Time (UTC+7) = 01:30 AM UTC daily
+    - cron: '30 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync-rates:
+    name: Scrape & Sync Bank Rates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Automated Rate Sync API
+        run: |
+          echo "Starting daily bank rate synchronization..."
+          response=$(curl -f -sS -X GET "${{ secrets.APP_URL }}/api/cron/update-rates" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
+          echo "Sync Response: $response"
